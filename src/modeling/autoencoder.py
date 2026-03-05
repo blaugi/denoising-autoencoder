@@ -1,5 +1,6 @@
 import lightning as L
 import torch
+from torchvision.transforms import v2
 
 from modeling.decoder import Decoder
 from modeling.encoder import Encoder
@@ -9,8 +10,8 @@ from modeling.encoder import Encoder
 class AutoEncoder(L.LightningModule):
     def __init__(
         self,
-        encoder: Encoder,
-        decoder: Decoder,
+        encoder: type[Encoder],
+        decoder: type[Decoder],
         base_channel_size: int,
         latent_dim: int,
         num_input_channels: int,
@@ -29,10 +30,12 @@ class AutoEncoder(L.LightningModule):
         return x_hat
 
     def _get_reconstruction_loss(self, batch):
-        x, _ = batch
-        x_hat = self.forward(x)
-        loss = torch.nn.functional.mse_loss(x_hat, x)
-        # loss = loss.sum([1, 2, 3]).mean(dim=0)
+        x_clean, _ = batch
+        noise_fn = v2.GaussianNoise(mean=0.0, sigma=0.1, clip=True)
+        x_noisy = noise_fn(x_clean)
+        x_hat = self.forward(x_noisy)
+
+        loss = torch.nn.functional.mse_loss(x_hat, x_clean)
         return loss
 
     def configure_optimizers(self):
