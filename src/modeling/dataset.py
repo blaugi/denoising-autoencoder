@@ -21,7 +21,6 @@ class CIFAR10DataModule(L.LightningDataModule):
             ]
         )
 
-        self.noise_transform = v2.GaussianNoise(mean=0.0, sigma=0.1, clip=True)
 
     def setup(self, stage=None):
         # Apply transforms and split dataset

@@ -1,5 +1,6 @@
 from lightning.pytorch import Trainer, seed_everything
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
+from torchvision.transforms import v2
 import matplotlib.pyplot as plt
 
 from modeling.autoencoder import AutoEncoder
@@ -13,8 +14,8 @@ def main():
     model = AutoEncoder(
         decoder=Decoder,
         encoder=Encoder,
-        base_channel_size=64,
-        latent_dim=128,
+        base_channel_size=128,
+        latent_dim=256,
         num_input_channels=3,
     )
 
@@ -27,32 +28,39 @@ def main():
     n_images = 5
 
     images = []
+    noise_fn = v2.GaussianNoise(mean=0.0, sigma=0.1, clip=True)
+
+    images = []
     for _ in range(n_images):
         x, _ = next(data_loader_iter)
-        prediction = model.forward(x)
+        x_noisy = noise_fn(x)
+        prediction = model.forward(x_noisy)
 
-        images.append((x, prediction))
+        images.append((x, x_noisy, prediction))
 
-    fig, axes = plt.subplots(n_images, 2, figsize=(8, 3 * n_images))
-    for i, (original, reconstruction) in enumerate(images):
-        img_orig = original[0].detach().cpu()
-        img_recon = reconstruction[0].detach().cpu()
-
-        img_orig = (img_orig * 0.5) + 0.5
-        img_recon = (img_recon * 0.5) + 0.5
-
+    fig, axes = plt.subplots(n_images, 3, figsize=(8, 3 * n_images))
+    for i, (original, noisy, reconstruction) in enumerate(images):
+        img_orig = (original[0].detach().cpu() * 0.5) + 0.5
+        img_noisy = (noisy[0].detach().cpu() * 0.5) + 0.5
+        img_recon = (reconstruction[0].detach().cpu() * 0.5) + 0.5
+        
+        # Plot Original
         axes[i, 0].imshow(img_orig.permute(1, 2, 0))
         axes[i, 0].set_title("Original")
         axes[i, 0].axis("off")
 
-        axes[i, 1].imshow(img_recon.permute(1, 2, 0))
-        axes[i, 1].set_title("Reconstructed")
+        # Plot Noisy
+        axes[i, 1].imshow(img_noisy.permute(1, 2, 0))
+        axes[i, 1].set_title("Noisy Input")
         axes[i, 1].axis("off")
 
+        # Plot Reconstruction
+        axes[i, 2].imshow(img_recon.permute(1, 2, 0))
+        axes[i, 2].set_title("Reconstructed")
+        axes[i, 2].axis("off")
+
     plt.tight_layout()
-    plt.show() 
-        
-        
+    plt.show()
 
 
 if __name__ == "__main__":
