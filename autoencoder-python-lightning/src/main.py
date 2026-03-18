@@ -13,8 +13,8 @@ def main():
     seed_everything(42, workers=True)
 
     # noise_fn = v2.RandomErasing()
-    # noise_fn = v2.GaussianNoise(mean=0.0, sigma=0.1, clip=True)
-    noise_fn = SaltAndPepperNoise(amount=0.05)
+    noise_fn = v2.GaussianNoise(mean=0.0, sigma=0.1, clip=True)
+    # noise_fn = SaltAndPepperNoise(amount=0.05)
     model = AutoEncoder(
         decoder=Decoder,
         encoder=Encoder,
@@ -39,17 +39,14 @@ def main():
         img_noisy = (noisies[i].detach().cpu() * 0.5) + 0.5
         img_recon = (reconstructions[i].detach().cpu() * 0.5) + 0.5
         
-        # Plot Original
         axes[i, 0].imshow(img_orig.permute(1, 2, 0))
         axes[i, 0].set_title("Original")
         axes[i, 0].axis("off")
 
-        # Plot Noisy
         axes[i, 1].imshow(img_noisy.permute(1, 2, 0))
         axes[i, 1].set_title("Noisy Input")
         axes[i, 1].axis("off")
 
-        # Plot Reconstruction
         axes[i, 2].imshow(img_recon.permute(1, 2, 0))
         axes[i, 2].set_title("Reconstructed")
         axes[i, 2].axis("off")
