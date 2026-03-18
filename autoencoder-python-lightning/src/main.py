@@ -9,12 +9,13 @@ from modeling.decoder import Decoder
 from modeling.encoder import Encoder
 from modeling.noise import SaltAndPepperNoise
 
+
 def main():
     seed_everything(42, workers=True)
 
     # noise_fn = v2.RandomErasing()
-    noise_fn = v2.GaussianNoise(mean=0.0, sigma=0.1, clip=True)
-    # noise_fn = SaltAndPepperNoise(amount=0.05)
+    # noise_fn = v2.GaussianNoise(mean=0.0, sigma=0.1, clip=False)
+    noise_fn = SaltAndPepperNoise(amount=0.1)
     model = AutoEncoder(
         decoder=Decoder,
         encoder=Encoder,
@@ -27,7 +28,7 @@ def main():
     dm = CIFAR10DataModule(num_workers=3)
 
     trainer = Trainer(callbacks=[EarlyStopping(monitor="val_loss", mode="min")])
-    trainer.fit(model,datamodule=dm)
+    trainer.fit(model, datamodule=dm)
 
     originals, noisies, reconstructions = model.validation_step_outputs
     n_images = 5
@@ -38,7 +39,7 @@ def main():
         img_orig = (originals[i].detach().cpu() * 0.5) + 0.5
         img_noisy = (noisies[i].detach().cpu() * 0.5) + 0.5
         img_recon = (reconstructions[i].detach().cpu() * 0.5) + 0.5
-        
+
         axes[i, 0].imshow(img_orig.permute(1, 2, 0))
         axes[i, 0].set_title("Original")
         axes[i, 0].axis("off")
@@ -53,7 +54,6 @@ def main():
 
     plt.tight_layout()
     plt.show()
-
 
 
 if __name__ == "__main__":

@@ -14,11 +14,13 @@ class SaltAndPepperNoise(torch.nn.Module):
         self.salt_vs_pepper = salt_vs_pepper
 
     def forward(self, img: Tensor) -> Tensor:
-        mask = torch.rand_like(img)
+        spatial_shape = img.shape[1:] if img.ndim == 3 else img.shape[2:]
+        mask = torch.rand(spatial_shape, device=img.device)
+        
+        out = img.clone()
         salt_mask = mask < (self.amount * self.salt_vs_pepper)
         pepper_mask = (mask >= (self.amount * self.salt_vs_pepper)) & (mask < self.amount)
         
-        out = img.clone()
-        out[salt_mask] = 1.0
-        out[pepper_mask] = 0.0
+        out[..., salt_mask] = 1.0
+        out[..., pepper_mask] = 0.0 # apply to all channels
         return out
