@@ -28,7 +28,6 @@ pub struct ModelConfig {
 impl ModelConfig {
     /// Returns the initialized model.
     pub fn init<B: Backend>(&self, device: &B::Device) -> Autoencoder<B> {
-        let c_hid = self.base_channel_size;
         Autoencoder {
             encoder : EncoderConfig{
                 num_input_channels: self.num_input_channels,
