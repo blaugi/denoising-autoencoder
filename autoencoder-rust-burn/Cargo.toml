@@ -4,4 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-burn = { version = "0.20.1", features = ["dataset", "vision"] }
+burn = { version = "0.20.1", features = ["dataset", "vision", "train", "burn-tch"] }
+burn-dataset = "0.20.1"
+serde = "1.0.228"
+image = "0.24"
+burn-tch = "0.20.1"
