@@ -22,7 +22,6 @@ pub struct ModelConfig {
     latent_dim: usize,
     width:usize,
     height:usize,
-    noise_fn: GaussianNoiseConfig,
 }
 
 impl ModelConfig {

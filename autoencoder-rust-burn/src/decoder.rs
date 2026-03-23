@@ -71,7 +71,9 @@ impl<B: Backend> Decoder<B> {
 
         let x = self.linear.forward(x);
         let x = self.activation.forward(x);
-        let x = x.reshape([x.shape()[0], -1, 4, 4]);
+        let batch_size = x.dims()[0];
+        let flattened = x.dims()[1];
+        let x = x.reshape([batch_size, flattened / 16, 4, 4]);
 
         let x = self.conv1.forward(x); 
         let x = self.activation.forward(x);
@@ -79,13 +81,13 @@ impl<B: Backend> Decoder<B> {
         let x = self.conv2.forward(x); 
         let x = self.activation.forward(x);
 
-        let x = self.conv2.forward(x); 
+        let x = self.conv3.forward(x); 
         let x = self.activation.forward(x);
 
-        let x = self.conv2.forward(x); 
+        let x = self.conv4.forward(x); 
         let x = self.activation.forward(x);
 
-        let x = self.conv2.forward(x); 
+        let x = self.conv5.forward(x); 
         self.tanh.forward(x)
 
 
