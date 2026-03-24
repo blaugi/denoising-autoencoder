@@ -21,7 +21,8 @@ impl<B: Backend> Autoencoder<B> {
         images: Tensor<B, 4>,
     ) -> RegressionOutput<B> {
         let targets = images.clone();
-        let output = self.forward(images);
+        let x = self.noise_fn.forward(images.clone());
+        let output = self.forward(x.clone());
         let loss = MseLoss::new().forward(output.clone(), targets.clone(), Reduction::Auto);
 
         let output_flat = output.clone().flatten::<2>(1, 3);

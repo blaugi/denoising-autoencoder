@@ -12,7 +12,7 @@ use burn::{
 pub struct Autoencoder<B: Backend> {
     encoder: Encoder<B>,
     decoder: Decoder<B>,
-    noise_fn : GaussianNoise,
+    pub noise_fn : GaussianNoise,
 }
 
 #[derive(Config, Debug)]
@@ -38,7 +38,7 @@ impl ModelConfig {
                 latent_dim: self.latent_dim,
                 base_channel_size: self.base_channel_size,
             }.init(device),
-            noise_fn: GaussianNoiseConfig{std:1.}.init(),
+            noise_fn: GaussianNoiseConfig{std:0.05}.init(),
           
         }
     }
