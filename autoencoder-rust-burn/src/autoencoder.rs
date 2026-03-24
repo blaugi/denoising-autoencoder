@@ -49,7 +49,7 @@ impl<B: Backend> Autoencoder<B> {
     ///   - Images [batch_size, height, width]
     ///   - Output [batch_size, class_prob]
     pub fn forward(&self, images: Tensor<B, 4>) -> Tensor<B, 4> {
-        let [batch_size, channels, height, width] = images.dims();
+        let [_batch_size, _channels, _height, _width] = images.dims();
 
         let x = images;
         

@@ -6,17 +6,17 @@ mod training;
 
 use burn::{
     backend::Autodiff,
+    backend::wgpu::{Wgpu, WgpuDevice},
     optim::AdamConfig,
 };
-use burn_tch::{LibTorch, LibTorchDevice}; // Import the LibTorch integration
 use autoencoder::ModelConfig;
 use training::TrainingConfig;
 
 fn main() {
-    type MyBackend = LibTorch<f32>;
+    type MyBackend = Wgpu<f32, i32>;
     type MyAutodiffBackend = Autodiff<MyBackend>;
 
-    let device = LibTorchDevice::Cuda(0); 
+    let device = WgpuDevice::default(); 
     let artifact_dir = "/tmp/autoencoder";
 
     let optimizer_config = AdamConfig::new();

@@ -38,7 +38,6 @@ impl DecoderConfig{
                 .init(device),
             conv2: ConvTranspose2dConfig::new([2 * c_hid, 2 * c_hid], [3, 3])
                 .with_padding([1,1])
-                .with_padding_out([1,1])
                 .init(device),
             conv3: ConvTranspose2dConfig::new([2 * c_hid, c_hid], [3, 3])
                 .with_padding([1,1])
@@ -47,7 +46,6 @@ impl DecoderConfig{
                 .init(device),
             conv4: ConvTranspose2dConfig::new([c_hid, c_hid], [3, 3])
                 .with_padding([1,1])
-                .with_padding_out([1,1])
                 .init(device),
             conv5: ConvTranspose2dConfig::new([c_hid, self.num_input_channels], [3, 3])
                 .with_padding([1,1])
@@ -65,7 +63,7 @@ impl<B: Backend> Decoder<B> {
     ///   - Images [batch_size, height, width]
     ///   - Output [batch_size, class_prob]
     pub fn forward(&self, images: Tensor<B, 2>) -> Tensor<B, 4> {
-        let [batch_size, flattened] = images.dims();
+        let [_batch_size, _flattened] = images.dims();
 
         let x = images;
 

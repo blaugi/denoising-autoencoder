@@ -165,7 +165,6 @@ version = "0.1.0"
 dependencies = [
  "burn",
  "burn-dataset",
- "burn-tch",
  "image 0.24.9",
  "serde",
 ]

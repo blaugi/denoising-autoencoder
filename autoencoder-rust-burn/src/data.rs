@@ -8,6 +8,7 @@ use serde::Deserialize;
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct Cifar10ItemRaw {
+    #[serde(rename = "img_bytes")] // when burn dataset downloads it ussully appends _bytes to the end of Image features
     pub img: Vec<u8>,
     pub label: usize,
 }

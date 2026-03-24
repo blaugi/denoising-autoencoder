@@ -58,8 +58,6 @@ impl<B: Backend> Encoder<B> {
     ///   - Images [batch_size, height, width]
     ///   - Output [batch_size, class_prob]
     pub fn forward(&self, images: Tensor<B, 4>) -> Tensor<B, 2> {
-        let [batch_size, channels, height, width] = images.dims();
-
         let x = images;
 
         let x = self.conv1.forward(x); 
@@ -68,16 +66,18 @@ impl<B: Backend> Encoder<B> {
         let x = self.conv2.forward(x); 
         let x = self.activation.forward(x);
 
-        let x = self.conv2.forward(x); 
+        let x = self.conv3.forward(x); 
         let x = self.activation.forward(x);
 
-        let x = self.conv2.forward(x); 
+        let x = self.conv4.forward(x); 
         let x = self.activation.forward(x);
 
-        let x = self.conv2.forward(x); 
+        let x = self.conv5.forward(x); 
         let x = self.activation.forward(x);
 
-        let x = x.reshape([batch_size, (channels * height * width)]);
+        let [batch_size, current_channels, current_height, current_width] = x.dims();
+        let x = x.reshape([batch_size, current_channels * current_height * current_width]);
+
         self.linear.forward(x)
 
     }
